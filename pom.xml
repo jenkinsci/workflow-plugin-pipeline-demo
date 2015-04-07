@@ -36,7 +36,7 @@
           <type>runtime</type>
           <properties>
             <cargo.hostname>${host}</cargo.hostname>
-            <cargo.servlet.port>80</cargo.servlet.port>
+            <cargo.servlet.port>8080</cargo.servlet.port>
             <cargo.remote.username>manager</cargo.remote.username>
             <cargo.remote.password>manager</cargo.remote.password>
           </properties>
