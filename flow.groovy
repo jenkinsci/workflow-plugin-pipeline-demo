@@ -17,10 +17,10 @@ node('slave') {
         }
     })
     stage name: 'Staging', concurrency: 1
-    deploy 'target/x.war', 'staging'
+    sh "mvn cargo:redeploy -Dhost=stage.jetty.docker"
 }
 
-input message: "Does http://localhost:8080/staging/ look good?"
+input message: "Does http://stage.jetty.docker look good?"
 try {
     checkpoint('Before production')
 } catch (NoSuchMethodError _) {
@@ -28,10 +28,9 @@ try {
 }
 stage name: 'Production', concurrency: 1
 node('master') {
-    sh 'wget -O - -S http://localhost:8080/staging/'
     unarchive mapping: ['target/x.war' : 'x.war']
-    deploy 'x.war', 'production'
-    echo 'Deployed to http://localhost:8080/production/'
+    sh "mvn cargo:redeploy -Dhost=prod.jetty.docker"
+    echo 'Deployed to http://prod.jetty.docker'
 }
 
 def deploy(war, id) {
