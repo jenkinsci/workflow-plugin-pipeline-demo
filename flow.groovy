@@ -5,7 +5,7 @@ node('slave') {
     stage 'Dev'
     sh 'mvn clean package'
     archive 'target/x.war'
-    sh "mvn cargo:redeploy -Dhost=${hostDev}"
+    sh "mvn cargo:deploy -Dhost=${hostDev}"
 
     stage 'QA'
 
@@ -15,7 +15,7 @@ node('slave') {
         sh "mvn -f sometests/pom.xml test -Durl=${hostDev} -Dduration=20"
     })
     stage name: 'Staging', concurrency: 1
-    sh "mvn cargo:redeploy -Dhost=${hostStage}"
+    sh "mvn cargo:deploy -Dhost=${hostStage}"
 }
 
 input message: "Does ${hostStage} look good?"
@@ -27,6 +27,6 @@ try {
 stage name: 'Production', concurrency: 1
 node('slave') {
     unarchive mapping: ['target/x.war' : 'x.war']
-    sh "mvn cargo:redeploy -Dhost=${hostProd}"
+    sh "mvn cargo:deploy -Dhost=${hostProd}"
     echo 'Deployed to ${hostProd}'
 }
