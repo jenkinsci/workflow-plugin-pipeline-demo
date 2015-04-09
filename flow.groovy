@@ -9,9 +9,9 @@ node('slave') {
     stage 'QA'
 
     parallel(longerTests: {
-        sh "mvn -o -f sometests/pom.xml test -Durl=${hostDev} -Dduration=30"
+        sh "mvn -f sometests/pom.xml test -Durl=${hostDev} -Dduration=30"
     }, quickerTests: {
-        sh "mvn -o -f sometests/pom.xml test -Durl=${hostDev} -Dduration=20"
+        sh "mvn -f sometests/pom.xml test -Durl=${hostDev} -Dduration=20"
     })
     stage name: 'Staging', concurrency: 1
     sh "mvn cargo:redeploy -Dhost=${hostStage}"
