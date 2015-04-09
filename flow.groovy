@@ -17,7 +17,7 @@ node('slave') {
     sh "mvn cargo:redeploy -Dhost=${hostStage}"
 }
 
-input message: "Does http://${hostStage}:8080 look good?"
+input message: "Does ${hostStage} look good?"
 try {
     checkpoint('Before production')
 } catch (NoSuchMethodError _) {
@@ -27,5 +27,5 @@ stage name: 'Production', concurrency: 1
 node('slave') {
     unarchive mapping: ['target/x.war' : 'x.war']
     sh "mvn cargo:redeploy -Dhost=${hostProd}"
-    echo 'Deployed to http://${hostProd}:8080'
+    echo 'Deployed to ${hostProd}'
 }
