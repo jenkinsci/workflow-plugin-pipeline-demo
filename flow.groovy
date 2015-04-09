@@ -6,16 +6,22 @@ node('slave') {
     sh 'mvn clean package'
     archive 'target/x.war'
     sh "mvn cargo:redeploy -Dhost=${hostDev}"
+}
 
-    stage 'QA'
-
-    parallel(longerTests: {
+stage 'QA'
+parallel(longerTests: {
+    node('1') {
         sh "mvn -f sometests/pom.xml test -Durl=http://${hostDev}:8080/demo-war/ -Dduration=30"
-    }, quickerTests: {
+    }
+}, quickerTests: {
+    node('2') {
         sh "mvn -f sometests/pom.xml test -Durl=http://${hostDev}:8080/demo-war/ -Dduration=20"
-    })
-    checkpoint('Passed tests, ready to deploy to ${hostStage}')
-    stage name: 'Staging', concurrency: 1
+    }
+})
+
+checkpoint('Passed tests, ready to deploy to ${hostStage}')
+stage name: 'Staging', concurrency: 1
+node('slave') {
     sh "mvn cargo:redeploy -Dhost=${hostStage}"
 }
 
