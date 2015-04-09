@@ -1,6 +1,7 @@
 node('slave') {
-    git url: 'https://github.com/kmadel/workflow-plugin-pipeline-demo.git'
-    env.PATH="${tool 'Maven 3.x'}/bin:${env.PATH}"
+    git url: '/data/workflow-plugin-pipeline-demo/'
+    def mvnHome = tool 'M3'
+    env.PATH = "${mvnHome}/bin:${env.PATH}"
     stage 'Dev'
     sh 'mvn -o clean package'
     archive 'target/x.war'
