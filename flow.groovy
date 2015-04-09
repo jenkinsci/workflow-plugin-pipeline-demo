@@ -5,6 +5,7 @@ node('slave') {
     stage 'Dev'
     sh 'mvn clean package'
     archive 'target/x.war'
+    sh "mvn cargo:redeploy -Dhost=${hostDev}"
 
     stage 'QA'
 
