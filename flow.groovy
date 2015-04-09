@@ -9,15 +9,15 @@ node('slave') {
     stage 'QA'
 
     parallel(longerTests: {
-        sh "mvn -o -f sometests/pom.xml test -Durl=${devHost} -Dduration=30"
+        sh "mvn -o -f sometests/pom.xml test -Durl=${hostDev} -Dduration=30"
     }, quickerTests: {
-        sh "mvn -o -f sometests/pom.xml test -Durl=${devHost} -Dduration=20"
+        sh "mvn -o -f sometests/pom.xml test -Durl=${hostDev} -Dduration=20"
     })
     stage name: 'Staging', concurrency: 1
-    sh "mvn cargo:redeploy -Dhost=${stageHost}"
+    sh "mvn cargo:redeploy -Dhost=${hostStage}"
 }
 
-input message: "Does http://${stageHost}:8080 look good?"
+input message: "Does http://${hostStage}:8080 look good?"
 try {
     checkpoint('Before production')
 } catch (NoSuchMethodError _) {
@@ -26,6 +26,6 @@ try {
 stage name: 'Production', concurrency: 1
 node('slave') {
     unarchive mapping: ['target/x.war' : 'x.war']
-    sh "mvn cargo:redeploy -Dhost=${prodHost}"
-    echo 'Deployed to http://${prodHost}:8080'
+    sh "mvn cargo:redeploy -Dhost=${hostProd}"
+    echo 'Deployed to http://${hostProd}:8080'
 }
