@@ -3,7 +3,7 @@ node('slave') {
     def mvnHome = tool 'M3'
     env.PATH = "${mvnHome}/bin:${env.PATH}"
     stage 'Dev'
-    sh 'mvn -o clean package'
+    sh 'mvn clean package'
     archive 'target/x.war'
 
     stage 'QA'
