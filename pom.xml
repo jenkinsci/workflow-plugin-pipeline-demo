@@ -17,5 +17,50 @@
   </dependencies>
   <build>
     <finalName>x</finalName>
+    
+  <plugins>
+    <plugin>
+      <groupId>org.codehaus.cargo</groupId>
+      <artifactId>cargo-maven2-plugin</artifactId>
+      <version>1.3.2</version>
+      <configuration>
+ 
+        <!-- Container configuration -->
+        <container>
+          <containerId>jetty9x</containerId>
+          <type>remote</type>
+        </container>
+ 
+        <!-- Configuration to use with the container -->
+        <configuration>
+          <type>runtime</type>
+          <properties>
+            <cargo.hostname>${host}</cargo.hostname>
+            <cargo.servlet.port>8080</cargo.servlet.port>
+            <cargo.remote.username>manager</cargo.remote.username>
+            <cargo.remote.password>manager</cargo.remote.password>
+          </properties>
+        </configuration>
+ 
+        <!-- Deployer configuration -->
+        <deployer>
+          <type>remote</type>
+        </deployer>
+ 
+        <!-- Deployables configuration -->
+        <deployables>
+          <deployable>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>${project.artifactId}</artifactId>
+            <type>war</type>
+            <properties>
+              <context>/${project.artifactId}</context>
+            </properties>
+          </deployable>
+        </deployables>
+ 
+      </configuration>
+    </plugin>
+  </plugins>
   </build>
 </project>
