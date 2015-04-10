@@ -25,6 +25,7 @@ node('slave') {
     sh "mvn cargo:redeploy -Dhost=${hostStage}"
 }
 
+mail body: 'Awaiting approval to production for demo-war', subject: 'Awaiting prod approval', to: 'kmadel@cloudbees.com'
 input message: "Does http://${hostStage}:8080/demo-war/ look good?"
 checkpoint('Before production deployment')
 stage name: 'Production', concurrency: 1
